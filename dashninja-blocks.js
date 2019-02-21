@@ -352,7 +352,7 @@ $(document).ready(function(){
         $('#blockstableLR').text( n + ' ' + time );
       } );
    tableBlocks = $('#blockstable').dataTable( {
-        ajax: { url: "/data/blocks24h-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/blocks24h-"+dashninjatestnet+".json",
                 dataSrc: 'data.blocks',
                 cache: true },
         lengthMenu: [ [20, 70, 136, 272, -1], ["20 (~1h)", "70 (~3h)", "136 (~6h)", "272 (~12h)", "All (24h)"] ],
@@ -470,10 +470,10 @@ $(document).ready(function(){
               $('td',row).eq(5).css({"background-color": "#ffcb8f"});
               $('td',row).eq(6).css({"background-color": "#ffcb8f"});
             }
-            if (data.BlockMNProtocol == 70213) {
+            if (data.BlockMNProtocol == 70210) {
               $('td',row).eq(8).css({"background-color": "#8FFF8F"});
             }
-            else if (data.BlockMNProtocol < 70210) {
+            else if (data.BlockMNProtocol < 70102) {
               $('td',row).eq(8).css({"background-color": "#FFCB8F"});
             }
             else {

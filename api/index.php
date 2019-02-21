@@ -182,10 +182,10 @@ $app->get('/api/blocks', function() use ($app,&$mysqli) {
 
   $finalcount = count($mnpubkeys)+count($budgetids);
   if ($finalcount == 0) {
-      $errmsg[] = "To use this API you must select at least 1 pubkey or budgetname. If you need a full 24h blocks list, try: /data/blocks24h-".$testnet.".json";
+      $errmsg[] = "To use this API you must select at least 1 pubkey or budgetname. If you need a full 24h blocks list, try: /www/data/blocks24h-".$testnet.".json";
   }
   elseif ($finalcount > 50) {
-      $errmsg[] = "To use this API you must select at most 50 pubkeys and/or budgetnames. If you need a full 24h blocks list, try: /data/blocks24h-".$testnet.".json";
+      $errmsg[] = "To use this API you must select at most 50 pubkeys and/or budgetnames. If you need a full 24h blocks list, try: /www/data/blocks24h-".$testnet.".json";
   }
 
   if (count($errmsg) > 0) {
@@ -200,7 +200,7 @@ $app->get('/api/blocks', function() use ($app,&$mysqli) {
     $cachefnam = CACHEFOLDER.sprintf("dashninja_blocks_%d_%d_%s_%d_%d_%d_%s",$testnet,$cachenodetail,$cacheinterval,count($mnpubkeys),$onlysuperblocks,count($budgetids),$cacheserial);
     $cachefnamupdate = $cachefnam.".update";
     $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+$cachetime)>=time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $data = unserialize(file_get_contents($cachefnam));
       $data["cache"]["fromcache"] = true;
       $response->setStatusCode(200, "OK");
@@ -409,7 +409,8 @@ $app->get('/api/blocks', function() use ($app,&$mysqli) {
             $perversion[$block['BlockMNProtocol']]['BlocksPayedIncorrectRatio']++;
             $correctpayment = false;
           }
-          if ($block['BlockMNProtocol'] == $maxprotocol) {
+          //if ($block['BlockMNProtocol'] == $maxprotocol) {
+          if ($block['BlockVersion'] == 0x20000004) {
             $perminer[$minerkey]['BlocksPayedToCurrentProtocol'] += $block['BlockMNPayed'];
             if ($correctpayment) {
               $perminer[$minerkey]['BlocksPayedCorrectly']++;
@@ -696,7 +697,7 @@ $app->get('/api/blocks/superblocks', function() use ($app,&$mysqli) {
         $cachefnam = CACHEFOLDER.sprintf("dashninja_blocks_superblockspayments_%d_%d_%s",$testnet,count($proposalshash),$cacheserial);
         $cachefnamupdate = $cachefnam.".update";
         $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+$cachetime)>=time()) || file_exists($cachefnamupdate)));
-        if (DMN_USE_CACHE && $cachevalid) {
+        if ($cachevalid) {
             $data = unserialize(file_get_contents($cachefnam));
             $data["cache"]["fromcache"] = true;
             $response->setStatusCode(200, "OK");
@@ -870,7 +871,7 @@ $app->get('/api/budgets', function() use ($app,&$mysqli) {
     $cachefnam = CACHEFOLDER.sprintf("dashninja_budgets_%d_%d_%d_%d_%s",$testnet,$onlyvalid,count($budgetids),count($budgethashes),$cacheserial);
     $cachefnamupdate = $cachefnam.".update";
     $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+120)>=time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $data = unserialize(file_get_contents($cachefnam));
       $data["cache"]["fromcache"] = true;
       $response->setStatusCode(200, "OK");
@@ -1054,7 +1055,7 @@ $app->get('/api/budgetsexpected', function() use ($app,&$mysqli) {
     $cachefnamupdate = $cachefnam . ".update";
     $cachetime = filemtime($cachefnam);
     $cachevalid = (is_readable($cachefnam) && ((($cachetime + 120) >= time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $data = unserialize(file_get_contents($cachefnam));
       $data["cache"]["fromcache"] = true;
       $response->setStatusCode(200, "OK");
@@ -1208,7 +1209,7 @@ $app->get('/api/budgets/votes', function() use ($app,&$mysqli) {
     $cachefnamupdate = $cachefnam.".update";
     $cachetime = filemtime($cachefnam);
     $cachevalid = (is_readable($cachefnam) && ((($cachetime+120)>=time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $data = unserialize(file_get_contents($cachefnam));
       $data["cache"]["fromcache"] = true;
       $response->setStatusCode(200, "OK");
@@ -1378,7 +1379,7 @@ $app->get('/api/budgetsprojection', function() use ($app,&$mysqli) {
     $cachefnam = CACHEFOLDER.sprintf("dashninja_budgetsprojection_%d_%d_%d_%d_%s",$testnet,$onlyvalid,count($budgetids),count($budgethashes),$cacheserial);
     $cachefnamupdate = $cachefnam.".update";
     $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+120)>=time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $data = unserialize(file_get_contents($cachefnam));
       $data["cache"]["fromcache"] = true;
       $response->setStatusCode(200, "OK");
@@ -1612,7 +1613,7 @@ $app->get('/api/governanceproposals', function() use ($app,&$mysqli) {
         $cachefnam = CACHEFOLDER.sprintf("dashninja_governanceproposals_%d_%d_%d_%d_%s",$testnet,$onlyvalid,count($proposalsnames),count($proposalshashes),$cacheserial);
         $cachefnamupdate = $cachefnam.".update";
         $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+120)>=time()) || file_exists($cachefnamupdate)));
-        if (DMN_USE_CACHE && $cachevalid) {
+        if ($cachevalid) {
             $data = unserialize(file_get_contents($cachefnam));
             $data["cache"]["fromcache"] = true;
             $response->setStatusCode(200, "OK");
@@ -1820,7 +1821,7 @@ $app->get('/api/governanceproposals/votelimit', function() use ($app,&$mysqli) {
     $cachefnam = CACHEFOLDER.sprintf("dashninja_governanceproposals_votelimit_%d",$testnet);
     $cachefnamupdate = $cachefnam.".update";
     $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+120)>=time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
         $data = unserialize(file_get_contents($cachefnam));
         $data["cache"]["fromcache"] = true;
 
@@ -1990,7 +1991,7 @@ $app->get('/api/governanceproposals/votes', function() use ($app,&$mysqli) {
         $cachefnamupdate = $cachefnam.".update";
         $cachetime = filemtime($cachefnam);
         $cachevalid = (is_readable($cachefnam) && ((($cachetime+120)>=time()) || file_exists($cachefnamupdate)));
-        if (DMN_USE_CACHE && $cachevalid) {
+        if ($cachevalid) {
             $data = unserialize(file_get_contents($cachefnam));
             $data["cache"]["fromcache"] = true;
             $response->setStatusCode(200, "OK");
@@ -2129,7 +2130,7 @@ $app->get('/api/governancetriggers', function() use ($app,&$mysqli) {
         $cachefnam = CACHEFOLDER.sprintf("dashninja_governancetriggers_%d_%d_%d_%d",$testnet,$onlyvalid,$onlyfuture,$afterblockheight);
         $cachefnamupdate = $cachefnam.".update";
         $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+120)>=time()) || file_exists($cachefnamupdate)));
-        if (DMN_USE_CACHE && $cachevalid) {
+        if ($cachevalid) {
             $data = unserialize(file_get_contents($cachefnam));
             $data["cache"]["fromcache"] = true;
             $response->setStatusCode(200, "OK");
@@ -2348,7 +2349,7 @@ $app->get('/api/masternodes', function() use ($app,&$mysqli) {
   if ($protocol == -1) {
     $cachefnam = CACHEFOLDER.sprintf("dashninja_maxprotocol_%d",$testnet);
     $cachevalid = (is_readable($cachefnam) && ((filemtime($cachefnam)+300)>=time()));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $protocol = unserialize(file_get_contents($cachefnam));
     }
     else {
@@ -2451,7 +2452,7 @@ $app->get('/api/masternodes', function() use ($app,&$mysqli) {
     $errmsg[] = "To use this API you must select at most 50 masternodes by IP, vin or pubkey. If you need a full list, try: /data/masternodeslistfull-".$testnet.".json";
   }
 
-  // Retrieve the optional info parameters (status, balance and portcheck)
+    // Retrieve the optional info parameters (status, balance and portcheck)
   $withbalance = ($request->hasQuery('balance') && ($request->getQuery('balance') == 1));
   $withportcheck = ($request->hasQuery('portcheck') && ($request->getQuery('portcheck') == 1));
   $withlastpaid = ($request->hasQuery('lastpaid') && ($request->getQuery('lastpaid') == 1));
@@ -2967,217 +2968,6 @@ $app->get('/api/masternodes/stats', function() use ($app,&$mysqli) {
 
 });
 
-
-// Get deterministic masternodes status
-// Parameters:
-//   testnet=0|1
-//   protxhash=JSON encoded list of protx hashes
-//   ip=JSON encoded list of ip:port
-//   collateral=JSON encoded list of output-index
-// TODO
-//   payout=JSON encoded list of payout pubkeys
-//   operator=JSON encoded list of operator pubkeys
-// Each following enabled parameter will slow down the query, only activate if you really need the data :
-//   balance=0|1 (optional, add balance info)
-//   exstatus=0|1 (optional, add extended masternode status)
-//   portcheck=0|1 (optional, add portcheck info)
-$app->get('/api/protx', function() use ($app,&$mysqli) {
-
-    //Create a response
-    $response = new Phalcon\Http\Response();
-    $response->setHeader('Access-Control-Allow-Origin', '*');
-    $response->setHeader("Content-Type", "application/json");
-
-    $request = $app->request;
-
-    $errmsg = array();
-
-    if (!array_key_exists('CONTENT_LENGTH',$_SERVER) || (intval($_SERVER['CONTENT_LENGTH']) != 0)) {
-        $errmsg[] = "No CONTENT expected";
-    }
-
-    // Retrieve the 'testnet' parameter
-    if ($request->hasQuery('testnet')) {
-        $testnet = intval($request->getQuery('testnet'));
-        if (($testnet != 0) && ($testnet != 1)) {
-            $testnet = 0;
-        }
-    }
-    else {
-        $testnet = 0;
-    }
-
-    // Retrieve the 'pubkeys' parameter
-    if ($request->hasQuery('protxhash')) {
-        $protxhashes = json_decode($request->getQuery('protxhash'));
-        if (($protxhashes === false) || !is_array($protxhashes)) {
-            $errmsg[] = "Parameter protxhash: Not a JSON encoded list of hashes";
-        }
-        else {
-            foreach ($protxhashes as $protxhash) {
-                if (strlen($protxhash) != 64) {
-                    $errmsg[] = "Parameter protxhash: Entry $protxhash: Incorrect hash format.";
-                }
-            }
-        }
-    }
-    else {
-        $protxhashes = array();
-    }
-
-    // Retrieve the 'collateral' parameter
-    if ($request->hasQuery('collateral')) {
-        $collaterals = json_decode($request->getQuery('collateral'));
-        if (($collaterals === false) || !is_array($collaterals)) {
-            $errmsg[] = "Parameter collateral: Not a JSON encoded list of collateral-index";
-        }
-        else {
-            foreach ($collaterals as $collateral) {
-                $collateralx = explode("-",$collateral);
-                if (count($collateralx) != 2) {
-                    $errmsg[] = "Parameter collateral: Entry $collateral: Incorrect format (should be hash-index).";
-                }
-                else {
-                    if ( strlen($collateralx[0]) != 64 ) {
-                        $errmsg[] = "Parameter collateral: Entry $collateral: Incorrect hash format.";
-                    }
-                }
-            }
-        }
-    }
-    else {
-        $collaterals = array();
-    }
-
-    // Retrieve the 'ip' parameter
-    $protxips = array();
-    if ($request->hasQuery('ip')) {
-        $protxips = json_decode($request->getQuery('ip'));
-        if (($protxips === false) || !is_array($protxips)) {
-            $errmsg[] = "Parameter ip: Not a JSON encoded list of ip:port.";
-        }
-        else {
-            foreach ($protxips as $protxip) {
-                $protxipx = getipport($protxip);
-                if (count($protxipx) != 2) {
-                    $errmsg[] = "Parameter ips: Entry $protxip: Incorrect format (should be IP:Port).";
-                }
-                else {
-                    if (!filter_var($protxipx[0], FILTER_VALIDATE_IP)) {
-                        $errmsg[] = "Parameter ips: Entry ".$protxipx[0].": Incorrect IP format.";
-                    }
-                    $mnport = intval($protxipx[1]);
-                    if (($mnport < 0) || ($mnport > 65535)) {
-                        $errmsg[] = "Parameter ips: Entry $protxip: Incorrect port value.";
-                    }
-                    $protxips[] = $protxipx;
-                }
-            }
-        }
-    }
-
-    // Retrieve the optional info parameters (status, balance and portcheck)
-    $withbalance = ($request->hasQuery('balance') && ($request->getQuery('balance') == 1));
-    $withportcheck = ($request->hasQuery('portcheck') && ($request->getQuery('portcheck') == 1));
-    $withexstatus = ($request->hasQuery('exstatus') && ($request->getQuery('exstatus') == 1));
-
-    $finalcount = count($protxhashes)+count($collaterals)+count($protxips);
-/*    if ($finalcount == 0) {
-        $errmsg[] = "To use this API you must select at least 1 masternode by IP, collateral or ProTx Hashes. If you need a full list, try: /data/protxfull-".$testnet.".json";
-    }
-    elseif ($finalcount > 50) {
-        $errmsg[] = "To use this API you must select at most 50 masternodes by IP, collateral or ProTx Hashes. If you need a full list, try: /data/protxfull-".$testnet.".json";
-    }
-*/
-
-    if (count($errmsg) > 0) {
-        //Change the HTTP status
-        $response->setStatusCode(400, "Bad Request");
-
-        //Send errors to the client
-        $response->setJsonContent(array('status' => 'ERROR', 'messages' => $errmsg));
-    }
-    else {
-        // Retrieve deterministic masternodes list
-        $nodes = dmn_protx_get($mysqli, $testnet, $protxhashes, $protxips, $collaterals);
-        if (is_array($nodes)) {
-
-            // Generate the final list of IP:port (resulting from the query)
-            $mnipstrue = array();
-            $mnpubkeystrue = array();
-            $mnvinstrue = array();
-            foreach ($nodes as $node) {
-                $tmpvin = $node["collateralHash"] . "-" . $node["collateralIndex"];
-                if (!in_array($tmpvin, $mnvinstrue)) {
-                    $mnvinstrue[] = $tmpvin;
-                }
-                $tmpip = $node['state']['addrIP'] . "-" . $node['state']['addrPort'];
-                if (!in_array($tmpip, $mnipstrue)) {
-                    $mnipstrue[] = $tmpip;
-                }
-                if (!in_array($node['state']['payoutAddress'],$mnpubkeystrue)) {
-                    $mnpubkeystrue[] = $node['state']['payoutAddress'];
-                }
-            }
-
-            // If we need the portcheck info, let's retrieve it
-            if ($withportcheck) {
-                $portcheck = dmn_masternodes_portcheck_get($mysqli, $mnipstrue, $testnet);
-                if ($portcheck === false) {
-                    $response->setStatusCode(503, "Service Unavailable");
-                    $response->setJsonContent(array('status' => 'ERROR', 'messages' => array($mysqli->errno.': '.$mysqli->error)));
-                }
-                else {
-                    foreach($nodes as $key => $node) {
-                        if (array_key_exists($node['state']['addrIP']."-".$node['state']['addrPort'],$portcheck)) {
-                            $nodes[$key]['Portcheck'] = $portcheck[$node['state']['addrIP']."-".$node['state']['addrPort']];
-                        }
-                        else {
-                            $nodes[$key]['Portcheck'] = false;
-                        }
-                    }
-                }
-            }
-
-            // If we need the balance info, let's retrieve it
-            if ($withbalance) {
-                $balances = dmn_masternodes_balance_get($mysqli, $mnpubkeystrue, $testnet);
-                if ($balances === false) {
-                    $response->setStatusCode(503, "Service Unavailable");
-                    $response->setJsonContent(array('status' => 'ERROR', 'messages' => array($mysqli->errno.': '.$mysqli->error)));
-                }
-                else {
-                    foreach($nodes as $key => $node) {
-                        if (array_key_exists($node['state']['payoutAddress'],$balances)) {
-                            $nodes[$key]['Balance'] = $balances[$node['state']['payoutAddress']];
-                        }
-                        else {
-                            $nodes[$key]['Balance'] = false;
-                        }
-                    }
-                }
-            }
-
-            //Change the HTTP status
-            $response->setStatusCode(200, "OK");
-            $response->setJsonContent(array('status' => 'OK', 'data' => array('protx' => $nodes,
-                'cache' => array('time' => time(),
-                    'fromcache' => true),
-                'api' => array('version' => 1,
-                    'compat' => 1,
-                    'bev' => 'protx='.DASHNINJA_BEV.'.0')
-            )));
-
-        }
-        else {
-            $response->setStatusCode(503, "Service Unavailable");
-            $response->setJsonContent(array('status' => 'ERROR', 'messages' => array($mysqli->errno.': '.$mysqli->error)));
-        }
-    }
-    return $response;
-
-});
-
 // Get table vars
 // Parameters:
 //   none
@@ -3210,7 +3000,7 @@ $app->get('/api/tablevars', function() use ($app,&$mysqli) {
     $cachefnam = CACHEFOLDER."dashninja_tablevars";
     $cachefnamupdate = $cachefnam.".update";
     $cachevalid = (is_readable($cachefnam) && (((filemtime($cachefnam)+60)>=time()) || file_exists($cachefnamupdate)));
-    if (DMN_USE_CACHE && $cachevalid) {
+    if ($cachevalid) {
       $data = unserialize(file_get_contents($cachefnam));
       $data["cache"]["fromcache"] = true;
       $response->setStatusCode(200, "OK");

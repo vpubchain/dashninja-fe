@@ -204,7 +204,7 @@ function getLatestdashVersion() {
 };
 
 function getVoteLimit() {
-    $.getJSON("/data/votelimit-" + dashninjatestnet+".json", function (data) {
+    $.getJSON("/www/data/votelimit-" + dashninjatestnet+".json", function (data) {
         var cls = "panel-red";
         if (data.data.votelimit.nextvote.BlockTime == 0) {
             var datevotelimit = new Date(data.data.votelimit.nextsuperblock.BlockTime * 1000);
@@ -292,7 +292,7 @@ $(document).ready(function() {
         responsive: true,
         searching: false,
         dom: "Tfrtp",
-        ajax: { url: "/data/nodesstatus-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/nodesstatus-"+dashninjatestnet+".json",
             dataSrc: 'data.nodes',
             cache: true },
         "paging": false,
@@ -387,7 +387,7 @@ $(document).ready(function() {
         dom: "Trtp",
         responsive: true,
         searching: false,
-        ajax: { url: "/data/blocksconsensus-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/blocksconsensus-"+dashninjatestnet+".json",
             dataSrc: 'data.blocksconsensus',
             cache: true },
         "paging": false,

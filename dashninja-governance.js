@@ -182,7 +182,7 @@ $(document).ready(function(){
         else {
             tableSuperBlocksExpected = $('#superblocksexpectedtable').dataTable({
                 ajax: {
-                    url: "/data/governancetriggers-" + dashninjatestnet + ".json",
+                    url: "/www/data/governancetriggers-" + dashninjatestnet + ".json",
                     dataSrc: 'data.governancetriggers',
                     cache: true
                 },
@@ -239,7 +239,7 @@ $(document).ready(function(){
         $('#proposalsdetailtableLRHR').text(deltaTimeStampHRlong(json.data.cache.time, currenttimestamp()));
     } );
     tableGovernance = $('#proposalsdetailtable').dataTable( {
-        ajax: { url: "/data/governanceproposals-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/governanceproposals-"+dashninjatestnet+".json",
             dataSrc: 'data.governanceproposals',
             cache: true },
         paging: true,
@@ -493,7 +493,7 @@ $(document).ready(function(){
 
     } );
     tableSuperBlocks = $('#superblockstable').dataTable( {
-        ajax: { url: "/data/blockssuperblocks-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/blockssuperblocks-"+dashninjatestnet+".json",
             dataSrc: 'data.superblocks',
             cache: true },
         paging: true,

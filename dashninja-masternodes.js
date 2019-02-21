@@ -190,7 +190,7 @@ function getLatestdashVersion() {
 };
 
 function getVoteLimit() {
-    $.getJSON("/data/votelimit-" + dashninjatestnet+".json", function (data) {
+    $.getJSON("/www/data/votelimit-" + dashninjatestnet+".json", function (data) {
         var cls = "panel-red";
         if (data.data.votelimit.nextvote.BlockTime == 0) {
             var datevotelimit = new Date(data.data.votelimit.nextsuperblock.BlockTime * 1000);
@@ -278,7 +278,7 @@ $(document).ready(function() {
         responsive: true,
         searching: false,
         dom: "Tfrtp",
-        ajax: { url: "/data/nodesstatus-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/nodesstatus-"+dashninjatestnet+".json",
             dataSrc: 'data.nodes',
             cache: true },
         "paging": false,
@@ -373,7 +373,7 @@ $(document).ready(function() {
         dom: "Trtp",
         responsive: true,
         searching: false,
-        ajax: { url: "/data/blocksconsensus-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/blocksconsensus-"+dashninjatestnet+".json",
             dataSrc: 'data.blocksconsensus',
             cache: true },
         "paging": false,
@@ -491,6 +491,11 @@ $(document).ready(function() {
                 uniqueIPs.push( json.data.masternodes[i].MasternodeIP+":"+json.data.masternodes[i].MasternodePort );
             }
             if ((json.data.masternodes[i].Portcheck != false) && json.data.masternodes[i].Portcheck.hasOwnProperty("SubVer")) {
+                if(json.data.masternodes[i].Portcheck.SubVer){
+                    versioninfo = json.data.masternodes[i].Portcheck.SubVer;
+                }
+                /*
+                alert(json.data.masternodes[i].Portcheck.SubVer);
                 if ((json.data.masternodes[i].Portcheck.SubVer.length > 10) && (json.data.masternodes[i].Portcheck.SubVer.substring(0,9) == '/Satoshi:') && (json.data.masternodes[i].Portcheck.SubVer.substring(json.data.masternodes[i].Portcheck.SubVer.length-1) == '/')) {
                     versioninfo = json.data.masternodes[i].Portcheck.SubVer.substring(9,json.data.masternodes[i].Portcheck.SubVer.indexOf('/',10));
                 }
@@ -500,6 +505,7 @@ $(document).ready(function() {
                 else if ((json.data.masternodes[i].Portcheck.SubVer.length > 11) && (json.data.masternodes[i].Portcheck.SubVer.substring(0,11) == '/Dash Core:') && (json.data.masternodes[i].Portcheck.SubVer.substring(json.data.masternodes[i].Portcheck.SubVer.length-1) == '/')) {
                     versioninfo = json.data.masternodes[i].Portcheck.SubVer.substring(11,json.data.masternodes[i].Portcheck.SubVer.indexOf('/',11));
                 }
+                */
                 else {
                     versioninfo = "Unknown";
                 }
@@ -557,7 +563,7 @@ $(document).ready(function() {
         }
     } );
     tableMNList = $('#mnlist').dataTable( {
-        ajax: { url: "/data/masternodeslistfull-"+dashninjatestnet+".json",
+        ajax: { url: "/www/data/masternodeslistfull-"+dashninjatestnet+".json",
                 dataSrc: 'data.masternodes',
             cache: true },
         lengthMenu: [ [50, 100, 250, 500, -1], [50, 100, 250, 500, "All"] ],
@@ -695,6 +701,8 @@ $(document).ready(function() {
             { data: null, render: function ( data, type, row ) {
                 var versioninfo = '<i>Unknown</i>';
                 if ((data.Portcheck != false) && data.Portcheck.hasOwnProperty("SubVer")) {
+                    versioninfo = data.Portcheck.SubVer;
+                    /*
                     if ((data.Portcheck.SubVer.length > 10) && (data.Portcheck.SubVer.substring(0,9) == '/Satoshi:') && (data.Portcheck.SubVer.substring(data.Portcheck.SubVer.length-1) == '/')) {
                         versioninfo = data.Portcheck.SubVer.substring(9,data.Portcheck.SubVer.indexOf('/',10));
                     }
@@ -703,7 +711,7 @@ $(document).ready(function() {
                     }
                     else if ((data.Portcheck.SubVer.length > 11) && (data.Portcheck.SubVer.substring(0,11) == '/Dash Core:') && (data.Portcheck.SubVer.substring(data.Portcheck.SubVer.length-1) == '/')) {
                         versioninfo = data.Portcheck.SubVer.substring(11,data.Portcheck.SubVer.indexOf('/',11));
-                    }
+                    }*/
                 }
                 return versioninfo;
             } },

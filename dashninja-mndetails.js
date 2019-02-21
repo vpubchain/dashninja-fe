@@ -187,7 +187,7 @@ function mndetailsRefresh(useVin){
       outtxt = tmpDate.toLocaleString()+" ("+deltaTimeStampHRlong(parseInt(data.data[0].MasternodeLastPaid),currenttimestamp())+" ago)";
     }
     else {
-      outtxt = 'Never/Unknown';
+      outtxt = 'Never/Unknown1';
     }
     $('#mnlastpaid').html( outtxt );
 
@@ -204,7 +204,7 @@ function mndetailsRefresh(useVin){
       }
     }
     else {
-      outtxt = 'Never/Unknown';
+      outtxt = 'Never/Unknown1';
     }
     $('#mnlastpaidfromblocks').html( outtxt );
 
@@ -244,7 +244,7 @@ function mndetailsRefresh(useVin){
     var time = date.toLocaleTimeString();
        $('#mnportchecknextdate').text(n+' '+time);
 
-       var versioninfo = '<i>Unknown</i>';
+       var versioninfo = '<i>Unknown1</i>';
     if ((data.data[0].hasOwnProperty("Portcheck")) && (data.data[0].Portcheck != false)) {
         if ((data.data[0].Portcheck.SubVer.length > 10) && (data.data[0].Portcheck.SubVer.substring(0, 9) == '/Satoshi:') && (data.data[0].Portcheck.SubVer.substring(data.data[0].Portcheck.SubVer.length - 1) == '/')) {
             versioninfo = data.data[0].Portcheck.SubVer.substring(9, data.data[0].Portcheck.SubVer.indexOf('/', 10));
@@ -257,7 +257,7 @@ function mndetailsRefresh(useVin){
         }
     }
     else {
-        versioninfo = "Unknown";
+        versioninfo = "Unknown1";
     }
     $('#mnversion').html( versioninfo+" (Protocol="+data.data[0].MasternodeProtocol+")" );
        $('#mnversionraw').html( data.data[0].Portcheck.SubVer );
@@ -313,7 +313,7 @@ function mndetailsRefresh(useVin){
             } },
             { data: null, render: function ( data, type, row ) {
                if ((type != "sort") && (data.BlockMNPayeeExpected == "")) {
-                 return "<i>Unknown</i>";
+                 return "<i>Unknown1</i>";
                } else if (type == "sort") {
                  return data.BlockMNPayeeExpected;
                } else {
